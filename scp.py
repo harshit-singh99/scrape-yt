@@ -16,9 +16,10 @@ def scrape(url, tags):
     list_l = soup.select('a.content-link.spf-link.yt-uix-sessionlink.spf-link')
     list_l = [l['href'][9:] for l in list_l]
     sents = nltk.sent_tokenize(desc)
-    sents = [sent.replace(',', '') for sent in sents]
     sents = [sent for sent in sents if not any(word in sent.lower() for word in remove_words)]
-    sents = "".join(sents)
+    sents = "".join(sents).replace(',', '')
+    if len(sents) > 1000:
+        sents = sents[:1000]
     category = soup.find('ul', attrs={'class' : 'content watch-info-tag-list'}).getText().strip()
     if category not in tags:
         return False
@@ -65,6 +66,6 @@ tags = [['People & Blogs', 'Travel & Events'],
         ['How-to & Style', 'Entertainment', 'Music']]
 categories = ['travel', 'science', 'food', 'manufacturing', 'history', 'art']
 for i in range(len(urls)):
-    one(urls[i], tags[i], catrgories[i])
+    one(urls[i], tags[i], categories[i])
 
 file.close()
